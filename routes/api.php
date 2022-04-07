@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Set up 'cors' middleware for request methods (POST, GET etc.) and disable http request errors
+Route::middleware('cors')->group(function () {
+    Route::post('/client/register/{uid}', 'ClientAPI\DeviceController@register')->middleware('device.register');
+});
