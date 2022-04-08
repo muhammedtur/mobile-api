@@ -38,7 +38,7 @@ class DeviceController extends Controller
                     // Set client token to redis cache - Could be array with more device info
                     Cache::put("client:uid_{$request->uid}", $newDevice->clientToken);
                     // Set uid, subscription and subscription expire date to redis cache by client token - Could be array with more device info
-                    Cache::put("client:token_{$device->clientToken}", array(
+                    Cache::put("client:token_{$newDevice->clientToken}", array(
                         'uid' => $request->uid,
                         'subscription' => $newDevice->subscription,
                         'subscription_expire_date' => $newDevice->subscription_expire_date

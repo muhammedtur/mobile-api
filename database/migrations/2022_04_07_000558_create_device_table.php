@@ -28,7 +28,7 @@ class CreateDeviceTable extends Migration
             $table->string('os');
             $table->string('subscription')->default('started');
             // New register. Subscription due date 1 month from now. Could be change
-            $table->datetime('subscription_expire_date')->default(Carbon::now()->format('Y-m-d H:i:s')->addMonth());
+            $table->datetime('subscription_expire_date')->default(Carbon::now()->addMonth()->format('Y-m-d H:i:s'));
             $table->timestamps();
         });
     }
