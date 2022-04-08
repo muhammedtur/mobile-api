@@ -16,6 +16,19 @@ class DevicePurchase
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        $uid = $request->route('client-token');
+
+        if ($uid) {
+            // Get client token by uid
+            $client_token = Cache::get("client:uid_{$uid}");
+
+            if ($client_token) {
+                return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $client_token], 200);
+            }
+
+            return $next($request);
+        }
+        // Return bad request message
+        return response()->json(['result' => false, 'message' => 'Device id cannot be null!'], 400);
     }
 }
