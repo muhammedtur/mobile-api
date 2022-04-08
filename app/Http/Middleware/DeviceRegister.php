@@ -20,7 +20,8 @@ class DeviceRegister
         $uid = $request->route('uid');
 
         if ($uid) {
-            $client_token = Cache::get("client_token:{$uid}");
+            // Get client token by uid
+            $client_token = Cache::get("client:uid_{$uid}");
 
             if ($client_token) {
                 return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $client_token], 200);

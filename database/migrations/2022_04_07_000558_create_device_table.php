@@ -20,8 +20,10 @@ class CreateDeviceTable extends Migration
             $table->uuid('uid');
             $table->string('name', 50)->nullable();
             $table->string('appId');
+            $table->string('clientToken');
+            $table->string('subscription')->default('started');
             $table->string('language');
-            $table->string('os'); // Could be integer type depending by os type. Ex. 0: Android, 1: IOS etc.
+            $table->string('os'); // Field type could be integer depending by os type. Ex. 0: Android, 1: IOS etc.
             $table->timestamps();
         });
     }
