@@ -16,9 +16,9 @@ class DevicePurchase
      */
     public function handle(Request $request, Closure $next)
     {
-        $uid = $request->route('client-token');
+        $device_cache = $request->route('client_token');
 
-        if ($uid) {
+        if ($device_cache) {
             // Get client token by uid
             $client_token = Cache::get("client:uid_{$uid}");
 
