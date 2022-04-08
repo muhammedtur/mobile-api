@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC', // Timezone set UTC
+    'timezone' => 'UTC', // App default timezone set to UTC
 
     /*
     |--------------------------------------------------------------------------
