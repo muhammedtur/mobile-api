@@ -18,16 +18,14 @@ class CreateSubscriptionTable extends Migration
     {
         Schema::create('subscription', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('device_uid');
-            $table->string('appId');
-            $table->string('os');
+            $table->uuid('client_token');
             $table->string('status')->default('started');
             // Subscription due date 1 month from now. Could be change
             $table->datetime('expire_date')->default(Carbon::now()->addMonth()->format('Y-m-d H:i:s'));
             $table->timestamps();
 
-            $table->index(['os', 'expire_date']);
-            $table->foreign('device_uid')->references('uid')->on('devices');
+            $table->index(['client_token', 'expire_date']);
+            $table->foreign('client_token')->references('client_token')->on('devices')->onUpdate('cascade');
         });
     }
 

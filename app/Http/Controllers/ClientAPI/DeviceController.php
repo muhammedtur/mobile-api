@@ -71,7 +71,6 @@ class DeviceController extends Controller
 
     public function mockApi(Request $request)
     {
-        error_log(json_encode($request->all()));
         return response()->json(['status' => true, 'expire_date' => Carbon::now()->format('Y-m-d H:i:s')], 200);
     }
 }

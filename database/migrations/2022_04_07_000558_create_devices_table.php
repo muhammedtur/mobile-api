@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 // PSR2 NameSpace warning
-class CreateDeviceTable extends Migration
+class CreateDevicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,9 +18,9 @@ class CreateDeviceTable extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uid');
-            $table->string('name', 50)->nullable();
             $table->string('appId');
-            $table->string('client_token');
+            $table->uuid('client_token')->unique();
+            $table->string('name', 50)->nullable();
             // Default value set to en. Could be change
             $table->string('language')->default('en');
             // Field type could be integer depending by os type. Ex. 0: Android, 1: IOS etc.
