@@ -19,7 +19,7 @@ class DeviceController extends Controller
     public function register(Request $request)
     {
         // Check device has been registered by uid and appId before
-        $device = Device::where('uid', $request->uid)->where('appId', $request->appId)->first();
+        $device = Device::ofApplication($request->appId)->where('uid', $request->uid)->first();
 
         if ($device) {
             // Cache time can be set as desired
@@ -66,9 +66,14 @@ class DeviceController extends Controller
             return response()->json(['result' => false, 'message' => 'Device should register first!'], 200);
         }
 
-        $result = DeviceHelper::purchase($receipt, $device);
+        $subscription = Subscription::where('client_token', $client_token)->first();
 
-        return response()->json(['result' => $result], 200);
+        if (!$subscription || $subscription->status === "canceled") {
+            $result = DeviceHelper::purchase($receipt, $device);
+            return response()->json($result, 200);
+        }
+
+        return response()->json(['status' => true, 'message' => 'OK', 'expire_date' => $subscription->expire_date], 200);
     }
 
     public function mockApi(Request $request, $receipt)
@@ -88,6 +93,6 @@ class DeviceController extends Controller
             return response()->json(['status' => true, 'message' => "OK", 'expire_date' => Carbon::now(-6)->format('Y-m-d H:i:s')], 200);
         }
 
-        return response()->json(['status' => false], 400);
+        return response()->json(['status' => false, 'message' => "Invalid receipt!"], 400);
     }
 }

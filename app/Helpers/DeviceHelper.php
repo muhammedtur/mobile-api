@@ -42,19 +42,29 @@ class DeviceHelper
                         return false;
                     }
 
-                    if ($data['status'] && $data['expire_date']) {
+                    if ($data['status']) {
                         $subscription = new Subscription;
                         $subscription->client_token = $device->client_token;
                         $subscription->expire_date = Carbon::createFromFormat('Y-m-d H:i:s', $data['expire_date']);
                         if ($subscription->save()) {
-                            return true;
+                            return array(
+                                'status'=> $data['status'],
+                                'expire_date' => $data['expire_date'],
+                                'message' => $data['message']
+                            );
                         }
                     }
-                    return false;
+                    return array(
+                        'status'=> $data['status'],
+                        'message' => $data['message']
+                    );
                 }
             }
         } catch (\Exception $e) {
-            return false;
+            return array(
+                'status'=> false,
+                'message' => 'Error occurred while purchasing!'
+            );
         }
     }
 }

@@ -21,8 +21,6 @@ class CreateApplicationsTable extends Migration
             $table->json('credentials');
             $table->string('name', 50)->nullable();
             $table->timestamps();
-
-            $table->index('guid');
         });
     }
 

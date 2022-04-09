@@ -27,7 +27,7 @@ class CreateDevicesTable extends Migration
             $table->string('os');
             $table->timestamps();
 
-            $table->index(['uid', 'appId', 'client_token']);
+            $table->index(['uid', 'appId', 'client_token'], 'devices_index');
             $table->foreign('appId')->references('guid')->on('applications')->onDelete('cascade');
         });
     }

@@ -24,7 +24,7 @@ class CreateSubscriptionTable extends Migration
             $table->datetime('expire_date')->default(Carbon::now()->addMonth()->format('Y-m-d H:i:s'));
             $table->timestamps();
 
-            $table->index(['client_token', 'expire_date']);
+            $table->index(['client_token', 'expire_date'], 'subscription_index');
             $table->foreign('client_token')->references('client_token')->on('devices');
         });
     }

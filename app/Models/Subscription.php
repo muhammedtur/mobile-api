@@ -8,7 +8,7 @@ class Subscription extends Model
 {
     protected $table = 'subscription';
     protected $primaryKey = 'id';
-    protected $fillable  = ['client_token', 'subscription', 'subscription_expire_date'];
+    protected $fillable  = ['status', 'expire_date'];
     protected $hidden = ['created_at', 'updated_at'];
 
     // Relations
