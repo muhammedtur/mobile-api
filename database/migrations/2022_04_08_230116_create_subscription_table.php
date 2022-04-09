@@ -21,10 +21,13 @@ class CreateSubscriptionTable extends Migration
             $table->uuid('device_uid');
             $table->string('appId');
             $table->string('os');
-            $table->string('subscription')->default('started');
+            $table->string('status')->default('started');
             // Subscription due date 1 month from now. Could be change
-            $table->datetime('subscription_expire_date')->default(Carbon::now()->addMonth()->format('Y-m-d H:i:s'));
+            $table->datetime('expire_date')->default(Carbon::now()->addMonth()->format('Y-m-d H:i:s'));
             $table->timestamps();
+
+            $table->index(['os', 'expire_date']);
+            $table->foreign('device_uid')->references('uid')->on('devices');
         });
     }
 

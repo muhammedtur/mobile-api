@@ -20,12 +20,14 @@ class CreateDeviceTable extends Migration
             $table->uuid('uid');
             $table->string('name', 50)->nullable();
             $table->string('appId');
-            $table->string('clientToken');
+            $table->string('client_token');
             // Default value set to en. Could be change
             $table->string('language')->default('en');
             // Field type could be integer depending by os type. Ex. 0: Android, 1: IOS etc.
             $table->string('os');
             $table->timestamps();
+
+            $table->index(['uid', 'appId', 'client_token']);
         });
     }
 

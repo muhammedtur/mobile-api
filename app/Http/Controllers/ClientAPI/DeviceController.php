@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\ClientAPI;
 
-use App\Models\Device;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+use App\Models\Device;
+use App\Models\Subscription;
+use App\Helpers\DeviceHelper;
 
 use Cache;
 
@@ -19,31 +23,31 @@ class DeviceController extends Controller
         if ($device) {
             // Cache time can be set as desired
             // Set client token to redis cache by uid - Could be array with more device info
-            Cache::put("client:register:{$request->uid}:{$request->appId}", $device->clientToken);
+            Cache::put("client:register:{$request->uid}:{$request->appId}", $device->client_token);
             // Set uid, subscription and subscription expire date to redis cache by client token - Could be array with more device info
-            Cache::put("client:register:{$device->clientToken}", array(
+            Cache::put("client:register:{$device->client_token}", array(
                 'uid' => $request->uid,
                 'appId' => $request->appId,
             ));
-            return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $device->clientToken], 200);
+            return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $device->client_token], 200);
         } else {
             if ($request->appId && $request->language && $request->os) {
                 $newDevice = new Device;
                 $newDevice->uid = $request->uid;
                 $newDevice->appId = $request->appId;
-                $newDevice->clientToken = md5(microtime().$request->uid);
+                $newDevice->client_token = md5(microtime().$request->uid);
                 $newDevice->language = $request->language;
                 $newDevice->os = Str::upper($request->os);
                 if ($newDevice->save()) {
                     // Cache time can be set as desired
                     // Set client token to redis cache - Could be array with more device info
-                    Cache::put("client:register:{$request->uid}:{$request->appId}", $newDevice->clientToken);
+                    Cache::put("client:register:{$request->uid}:{$request->appId}", $newDevice->client_token);
                     // Set uid, subscription and subscription expire date to redis cache by client token - Could be array with more device info
-                    Cache::put("client:register:{$newDevice->clientToken}", array(
+                    Cache::put("client:register:{$newDevice->client_token}", array(
                         'uid' => $request->uid,
                         'appId' => $request->appId,
                     ));
-                    return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $newDevice->clientToken], 200);
+                    return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $newDevice->client_token], 200);
                 }
             }
             // Return bad request message
@@ -52,7 +56,22 @@ class DeviceController extends Controller
         return response()->json(['result' => false, 'message' => 'An error occured while registering device!'], 200);
     }
 
-    public function purhcase(Request $request, $client_token, $receipt)
+    public function purchase(Request $request, $client_token, $receipt)
     {
+        // Check device has been registered by uid and appId before
+        $device = Device::where('client_token', $client_token)->first();
+        if (!$device) {
+            return response()->json(['result' => false, 'message' => 'Device should register first!'], 200);
+        }
+
+        $result = DeviceHelper::purchase($receipt, $device);
+
+        return response()->json(['result' => $result], 200);
+    }
+
+    public function mockApi(Request $request)
+    {
+        error_log(json_encode($request->all()));
+        return response()->json(['status' => true, 'expire_date' => Carbon::now()->format('Y-m-d H:i:s')], 200);
     }
 }
