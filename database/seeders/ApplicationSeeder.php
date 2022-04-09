@@ -23,8 +23,16 @@ class ApplicationSeeder extends Seeder
             Application::firstOrCreate([
                 'guid' => Uuid::generate()->string,
                 'name' => "Test",
-                'username' => "application1_username",
-                'password' => "application1_password"
+                'credentials' => array(
+                    'ANDROID' => array(
+                        'username' => 'android_username',
+                        'password' => 'android_password'
+                    ),
+                    'IOS' => array(
+                        'username' => 'ios_username',
+                        'password' => 'ios_password'
+                    )
+                ),
             ]);
         }
     }

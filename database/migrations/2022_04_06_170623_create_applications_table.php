@@ -18,8 +18,7 @@ class CreateApplicationsTable extends Migration
         Schema::create('applications', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('guid')->unique();
-            $table->string('username');
-            $table->string('password');
+            $table->json('credentials');
             $table->string('name', 50)->nullable();
             $table->timestamps();
 

@@ -52,7 +52,7 @@ class DeviceController extends Controller
                 }
             }
             // Return bad request message
-            return response()->json(['result' => false, 'message' => 'Device fields cannot be null!'], 400);
+            return response()->json(['result' => false, 'message' => 'Fields cannot be null!'], 400);
         }
         return response()->json(['result' => false, 'message' => 'An error occured while registering device!'], 200);
     }
@@ -61,6 +61,7 @@ class DeviceController extends Controller
     {
         // Check device has been registered by uid and appId before
         $device = Device::where('client_token', $client_token)->first();
+
         if (!$device) {
             return response()->json(['result' => false, 'message' => 'Device should register first!'], 200);
         }
@@ -70,8 +71,23 @@ class DeviceController extends Controller
         return response()->json(['result' => $result], 200);
     }
 
-    public function mockApi(Request $request)
+    public function mockApi(Request $request, $receipt)
     {
-        return response()->json(['status' => true, 'expire_date' => Carbon::now()->format('Y-m-d H:i:s')], 200);
+        if (!$receipt) {
+            return response()->json(['result' => false, 'message' => 'Receipt cannot be null!'], 400);
+        }
+
+        // Could be check authorization - base64_decode($header)
+        $header = $request->header('Authorization');
+
+        // Get last character of receipt
+        $last_character = substr($receipt, -1);
+
+        // If last character of receipt odd number then return expire_date UTC -6 timezone and status true
+        if (intval($last_character) % 2 !== 0) {
+            return response()->json(['status' => true, 'message' => "OK", 'expire_date' => Carbon::now(-6)->format('Y-m-d H:i:s')], 200);
+        }
+
+        return response()->json(['status' => false], 400);
     }
 }

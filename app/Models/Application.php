@@ -8,6 +8,9 @@ class Application extends Model
 {
     protected $table = 'applications';
     protected $primaryKey = 'id';
-    protected $fillable  = ['guid', 'username', 'password', 'name'];
+    protected $guarded  = ['id', 'guid'];
     protected $hidden = ['created_at', 'updated_at'];
+    protected $casts = [
+        'credentials' => 'array'
+    ];
 }

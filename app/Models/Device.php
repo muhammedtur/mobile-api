@@ -14,7 +14,7 @@ class Device extends Model
     // Relations
     public function application()
     {
-        return $this->belongsTo('App\Models\Application', 'appId');
+        return $this->belongsTo('App\Models\Application', 'appId', 'guid');
     }
 
     // Scopes
