@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ClientAPI;
 use App\Models\Device;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use Cache;
 
@@ -32,7 +33,7 @@ class DeviceController extends Controller
                 $newDevice->appId = $request->appId;
                 $newDevice->clientToken = md5(microtime().$request->uid);
                 $newDevice->language = $request->language;
-                $newDevice->os = $request->os;
+                $newDevice->os = Str::upper($request->os);
                 if ($newDevice->save()) {
                     // Cache time can be set as desired
                     // Set client token to redis cache - Could be array with more device info
