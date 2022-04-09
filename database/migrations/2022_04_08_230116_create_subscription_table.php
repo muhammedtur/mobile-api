@@ -25,7 +25,7 @@ class CreateSubscriptionTable extends Migration
             $table->timestamps();
 
             $table->index(['client_token', 'expire_date']);
-            $table->foreign('client_token')->references('client_token')->on('devices')->onUpdate('cascade');
+            $table->foreign('client_token')->references('client_token')->on('devices');
         });
     }
 

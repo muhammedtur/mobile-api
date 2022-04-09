@@ -18,7 +18,7 @@ class CreateDevicesTable extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uid');
-            $table->string('appId');
+            $table->uuid('appId');
             $table->uuid('client_token')->unique();
             $table->string('name', 50)->nullable();
             // Default value set to en. Could be change
@@ -28,6 +28,7 @@ class CreateDevicesTable extends Migration
             $table->timestamps();
 
             $table->index(['uid', 'appId', 'client_token']);
+            $table->foreign('appId')->references('guid')->on('applications')->onDelete('cascade');
         });
     }
 

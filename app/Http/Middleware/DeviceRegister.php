@@ -6,6 +6,8 @@ use Closure;
 use Cache;
 use Illuminate\Http\Request;
 
+use App\Models\Application;
+
 class DeviceRegister
 {
     /**
@@ -23,6 +25,10 @@ class DeviceRegister
 
             if ($client_token) {
                 return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $client_token], 200);
+            }
+
+            if (!Application::where('guid', $request->appId)->first()) {
+                return response()->json(['result' => false, 'message' => 'Application not found!'], 200);
             }
 
             return $next($request);

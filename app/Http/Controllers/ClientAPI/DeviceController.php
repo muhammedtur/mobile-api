@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 use App\Models\Device;
 use App\Models\Subscription;
+use App\Models\Application;
 use App\Helpers\DeviceHelper;
 
 use Cache;
@@ -31,7 +32,7 @@ class DeviceController extends Controller
             ));
             return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $device->client_token], 200);
         } else {
-            if ($request->appId && $request->language && $request->os) {
+            if ($request->os) {
                 $newDevice = new Device;
                 $newDevice->uid = $request->uid;
                 $newDevice->appId = $request->appId;
