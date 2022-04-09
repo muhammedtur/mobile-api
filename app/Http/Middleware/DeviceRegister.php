@@ -17,9 +17,9 @@ class DeviceRegister
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->uid) {
+        if ($request->uid && $request->appId) {
             // Get client token by client_token
-            $client_token = Cache::get("client:uid_{$request->uid}");
+            $client_token = Cache::get("client:register:{$request->uid}:{$request->appId}");
 
             if ($client_token) {
                 return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $client_token], 200);
@@ -28,6 +28,6 @@ class DeviceRegister
             return $next($request);
         }
         // Return bad request message
-        return response()->json(['result' => false, 'message' => 'Client uid cannot be null!'], 400);
+        return response()->json(['result' => false, 'message' => 'Client uid and appId cannot be null!'], 400);
     }
 }

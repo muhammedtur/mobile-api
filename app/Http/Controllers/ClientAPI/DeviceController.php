@@ -12,17 +12,17 @@ class DeviceController extends Controller
 {
     public function register(Request $request)
     {
-        $device = Device::where('uid', $request->uid)->first();
+        // Check device has been registered by uid and appId before
+        $device = Device::where('uid', $request->uid)->where('appId', $request->appId)->first();
 
         if ($device) {
             // Cache time can be set as desired
             // Set client token to redis cache by uid - Could be array with more device info
-            Cache::put("client:uid_{$request->uid}", $device->clientToken);
+            Cache::put("client:register:{$request->uid}:{$request->appId}", $device->clientToken);
             // Set uid, subscription and subscription expire date to redis cache by client token - Could be array with more device info
-            Cache::put("client:token_{$device->clientToken}", array(
+            Cache::put("client:register:{$device->clientToken}", array(
                 'uid' => $request->uid,
-                'subscription' => $device->subscription,
-                'subscription_expire_date' => $device->subscription_expire_date
+                'appId' => $request->appId,
             ));
             return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $device->clientToken], 200);
         } else {
@@ -36,12 +36,11 @@ class DeviceController extends Controller
                 if ($newDevice->save()) {
                     // Cache time can be set as desired
                     // Set client token to redis cache - Could be array with more device info
-                    Cache::put("client:uid_{$request->uid}", $newDevice->clientToken);
+                    Cache::put("client:register:{$request->uid}:{$request->appId}", $newDevice->clientToken);
                     // Set uid, subscription and subscription expire date to redis cache by client token - Could be array with more device info
-                    Cache::put("client:token_{$newDevice->clientToken}", array(
+                    Cache::put("client:register:{$newDevice->clientToken}", array(
                         'uid' => $request->uid,
-                        'subscription' => $newDevice->subscription,
-                        'subscription_expire_date' => $newDevice->subscription_expire_date
+                        'appId' => $request->appId,
                     ));
                     return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $newDevice->clientToken], 200);
                 }
