@@ -51,7 +51,7 @@ class DeviceController extends Controller
         return response()->json(['result' => false, 'message' => 'An error occured while registering device!'], 200);
     }
 
-    public function purhcase(Request $request, $client_token)
+    public function purhcase(Request $request, $client_token, $receipt)
     {
     }
 }

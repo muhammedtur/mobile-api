@@ -21,5 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Set up 'cors' middleware for request methods (POST, GET etc.) and disable http request errors
 Route::middleware('cors')->group(function () {
     Route::post('/client/register', 'ClientAPI\DeviceController@register')->middleware('device.register');
-    Route::post('/client/purchase/{client_token}', 'ClientAPI\DeviceController@purchase')->middleware('device.purchase');
+    Route::get('/client/purchase/{client_token}/{receipt}', 'ClientAPI\DeviceController@purchase');
 });
