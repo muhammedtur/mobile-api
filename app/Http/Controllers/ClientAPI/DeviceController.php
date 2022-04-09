@@ -76,6 +76,20 @@ class DeviceController extends Controller
         return response()->json(['status' => true, 'message' => 'OK', 'expire_date' => $subscription->expire_date], 200);
     }
 
+    public function checkSubscription(Request $request, $client_token)
+    {
+        $subscription = Subscription::where('client_token', $client_token)->first();
+
+        if ($subscription) {
+            Cache::put("client:subscription:{$client_token}", array(
+                'status' => $subscription->status,
+                'expire_date' => $subscription->expire_date,
+            ));
+            return response()->json(['status' => $subscription->status, 'expire_date' => $subscription->expire_date], 400);
+        }
+        return response()->json(['status' => false, 'message' => 'Subscription not found!'], 400);
+    }
+
     public function mockApi(Request $request, $receipt)
     {
         if (!$receipt) {

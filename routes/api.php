@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('cors')->group(function () {
     Route::post('/client/register', 'ClientAPI\DeviceController@register')->middleware('device.register');
     Route::get('/client/purchase/{client_token}/{receipt}', 'ClientAPI\DeviceController@purchase');
+    Route::get('/client/subscription/{client_token}', 'ClientAPI\DeviceController@checkSubscription')->middleware('device.subscription');
 
     // ANDROID && IOS MOCK API
     Route::post('/v3/purchase/{receipt}', 'ClientAPI\DeviceController@mockApi');
