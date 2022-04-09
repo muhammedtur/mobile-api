@@ -102,6 +102,14 @@ class DeviceController extends Controller
         // Get last character of receipt
         $last_character = substr($receipt, -1);
 
+        // Get last two character of receipt
+        $last_two_character = substr($receipt, -2);
+
+        // If last two character of receipt is divisible by 6 then return rate-limit error
+        if (intval($last_two_character) % 6 === 0) {
+            return response()->json(['status' => false, 'message' => "rate-limit"], 400);
+        }
+
         // If last character of receipt odd number then return expire_date UTC -6 timezone and status true
         if (intval($last_character) % 2 !== 0) {
             return response()->json(['status' => true, 'message' => "OK", 'expire_date' => Carbon::now(-6)->format('Y-m-d H:i:s')], 200);
