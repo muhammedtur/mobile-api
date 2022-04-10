@@ -1,0 +1,168 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Documentation",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/client/register": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "requestBody": {
+                    "content": {
+                      "multipart/form-data": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "uid": {
+                              "description": "Device unique id.",
+                              "type": "string",
+                              "example": "asddsRt42346b5ba480e78b8",
+                              "required": true
+                            },
+                            "appId": {
+                              "description": "Application unique id.",
+                              "type": "string",
+                              "example": "401ca840-b878-11ec-962e-c5e8bbaeb1fd",
+                              "required": true
+                            },
+                            "os": {
+                              "description": "Device operating system.",
+                              "type": "string",
+                              "example": "IOS",
+                              "required": true
+                            },
+                            "language": {
+                              "description": "Device&app language",
+                              "type": "string",
+                              "example": "tr",
+                              "required": true
+                            }
+                          }
+                        }
+                      }
+                    }
+                },
+                "summary": "Client Register API",
+                "operationId": "ec2a309924760dfb5ba480e78b8d733b",
+                "responses": {
+                    "201": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Register OK"
+                                        },
+                                        "client-token": {
+                                            "type": "string",
+                                            "example": "4cdb6925e0ef7328543554016ea1a068"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/client/purchase/{client_token/{receipt}": {
+            "get": {
+                "tags": [
+                    "Purchase"
+                ],
+                "parameters": [{
+                        "name": "client_token",
+                        "in": "path",
+                        "description": "Device client token",
+                        "type": "string",
+                        "example": "4cdb6925e0ef7328543554016ea1a068",
+                        "required": true
+                    },{
+                        "name": "receipt",
+                        "in": "path",
+                        "description": "Random string",
+                        "type": "string",
+                        "example": "ec2a309924760dfb5ba480e78b8d7337",
+                        "required": true
+                        }],
+                "summary": "Client Purchase API",
+                "operationId": "ec2a309924760dfb5ba480e78b8d7337",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "expire_data": {
+                                            "type": "date",
+                                            "example": "2022-05-10 23:51:00"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OK"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/client/subscription/{client_token}": {
+            "get": {
+                "tags": [
+                    "Subscription"
+                ],
+                "parameters": [{
+                    "name": "client_token",
+                    "in": "path",
+                    "description": "Device client token",
+                    "type": "string",
+                    "example": "4cdb6925e0ef7328543554016ea1a068",
+                    "required": true
+                }],
+                "summary": "Device Subscription API",
+                "operationId": "jfheu09924760dfb5ba480e78b8d7337",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "expire_date": {
+                                            "type": "date",
+                                            "example": "2022-05-10 23:51:00"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

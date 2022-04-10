@@ -48,7 +48,7 @@ class DeviceController extends Controller
                         'uid' => $request->uid,
                         'appId' => $request->appId,
                     ));
-                    return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $newDevice->client_token], 200);
+                    return response()->json(['result' => true, 'message' => 'Register OK', 'client-token' => $newDevice->client_token], 201);
                 }
             }
             // Return bad request message
