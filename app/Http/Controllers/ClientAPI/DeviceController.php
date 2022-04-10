@@ -66,14 +66,10 @@ class DeviceController extends Controller
             return response()->json(['result' => false, 'message' => 'Device should register first!'], 200);
         }
 
-        $subscription = Subscription::where('client_token', $client_token)->first();
+        $subscription_check = Subscription::where('client_token', $client_token)->count();
+        $result = DeviceHelper::purchase($receipt, $device, $subscription_check);
 
-        if (!$subscription || $subscription->status === "canceled") {
-            $result = DeviceHelper::purchase($receipt, $device);
-            return response()->json($result, 200);
-        }
-
-        return response()->json(['status' => true, 'message' => 'OK', 'expire_date' => $subscription->expire_date], 200);
+        return response()->json($result, 200);
     }
 
     public function checkSubscription(Request $request, $client_token)
@@ -93,7 +89,7 @@ class DeviceController extends Controller
     public function mockApi(Request $request, $receipt)
     {
         if (!$receipt) {
-            return response()->json(['result' => false, 'message' => 'Receipt cannot be null!'], 400);
+            return response()->json(['status' => false, 'message' => 'Receipt cannot be null!'], 400);
         }
 
         // Could be check authorization - base64_decode($header)
@@ -103,16 +99,20 @@ class DeviceController extends Controller
         $last_character = substr($receipt, -1);
 
         // Get last two character of receipt
-        $last_two_character = substr($receipt, -2);
+        $last_two_character = intval(substr($receipt, -2));
 
         // If last two character of receipt is divisible by 6 then return rate-limit error
-        if (intval($last_two_character) % 6 === 0) {
+        if ($last_two_character != 0 && $last_two_character % 6 === 0) {
             return response()->json(['status' => false, 'message' => "rate-limit"], 400);
         }
 
-        // If last character of receipt odd number then return expire_date UTC -6 timezone and status true
+        // If last character of receipt odd number then return expire_date (added 1 month from now) UTC -6 timezone and status true
         if (intval($last_character) % 2 !== 0) {
-            return response()->json(['status' => true, 'message' => "OK", 'expire_date' => Carbon::now(-6)->format('Y-m-d H:i:s')], 200);
+            return response()->json([
+                'status' => true,
+                'message' => "OK",
+                'expire_date' => Carbon::now()->addMonth()->format('Y-m-d H:i:s')
+            ], 200);
         }
 
         return response()->json(['status' => false, 'message' => "Invalid receipt!"], 400);

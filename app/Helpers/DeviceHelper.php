@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -17,7 +18,7 @@ class DeviceHelper
     {
     }
 
-    public static function purchase($receipt, $device)
+    public static function purchase($receipt, $device, $sub_status)
     {
         try {
             $API_URL = env("{$device->os}_API_URL");
@@ -34,19 +35,30 @@ class DeviceHelper
                 $response_body = $response->getBody();
 
                 if (is_null($response_body) || empty($response_body)) {
-                    return false;
+                    return array(
+                        'status'=> false,
+                        'message' => 'Mock API can’t be reached'
+                    );
                 } else {
                     $data = json_decode($response_body, true);
 
-                    if (!is_array($data)) {
-                        return false;
+                    if (!isset($data['status'], $data['message'])) {
+                        return array(
+                            'status'=> false,
+                            'message' => 'Mock API can’t be reached'
+                        );
                     }
 
                     if ($data['status']) {
-                        $subscription = new Subscription;
-                        $subscription->client_token = $device->client_token;
-                        $subscription->expire_date = Carbon::createFromFormat('Y-m-d H:i:s', $data['expire_date']);
-                        if ($subscription->save()) {
+                        $result = Subscription::updateOrCreate(
+                            ['client_token' => $device->client_token],
+                            [
+                            'expire_date' => Carbon::createFromFormat('Y-m-d H:i:s', $data['expire_date']),
+                            'status' => $sub_status ? "renewed" : "started",
+                            ]
+                        );
+
+                        if ($result) {
                             return array(
                                 'status'=> $data['status'],
                                 'expire_date' => $data['expire_date'],
@@ -55,7 +67,7 @@ class DeviceHelper
                         }
                     }
                     return array(
-                        'status'=> $data['status'],
+                        'status'=> false,
                         'message' => $data['message']
                     );
                 }

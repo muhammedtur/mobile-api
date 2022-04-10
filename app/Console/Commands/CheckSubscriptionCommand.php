@@ -4,6 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\Models\Subscription;
+use App\Jobs\CheckSubscriptionJob;
+
+use Carbon\Carbon;
+
 class CheckSubscriptionCommand extends Command
 {
     /**
@@ -18,7 +23,7 @@ class CheckSubscriptionCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Check devices subscriptions';
 
     /**
      * Create a new command instance.
@@ -37,6 +42,15 @@ class CheckSubscriptionCommand extends Command
      */
     public function handle()
     {
-        return 0;
+        /**
+         * It will update the records that have passed the expire date and
+         * that have not been canceled by bringing 10 records each with queue
+         * Chunk size could be changed
+        */
+        Subscription::where('status', '!=', 'canceled')->whereDate('expire_date', '<=', Carbon::now(-6))->chunk(10, function ($subscriptions) {
+            foreach ($subscriptions as $subscription) {
+                CheckSubscriptionJob::dispatch($subscription);
+            }
+        });
     }
 }
