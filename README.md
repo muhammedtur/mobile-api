@@ -17,6 +17,8 @@ Composer version 2.2.9 2022-03-15 22:13:37
 # PHP
 PHP 8.1.0 (cli) (built: Nov 23 2021 21:46:10) (NTS Visual C++ 2019 x64
 
+# Database
+MySQL 8.0.28
 ```
 
 ## Installation Guide
