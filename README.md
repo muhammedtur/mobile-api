@@ -58,3 +58,11 @@ To run the scheduler:
 ```bash
 php artisan schedule:work
 ```
+
+## Documentation
+
+To API scheme documentation:
+
+```bash
+{APP_URL}/api/documentation
+```
